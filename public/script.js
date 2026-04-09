@@ -588,7 +588,7 @@
   function logout() {
     localStorage.removeItem("loggedInUser");
     showToast("Logged out successfully", "success");
-    setTimeout(() => window.location.href = "/", 1000);
+    setTimeout(() => window.location.href = "login.html", 1000);
   }
 
   /* ================= INIT ================= */

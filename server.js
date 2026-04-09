@@ -3,24 +3,22 @@ const fs = require("fs");
 const path = require("path");
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
-// Middlewares
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public"))); // ✅ FIXED
+app.use(express.static("public", { index: false }));
 
 // Root → Login page
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "login.html"));
 });
 
-// Helper functions
 function readData() {
-  return JSON.parse(fs.readFileSync(path.join(__dirname, "data.json")));
+  return JSON.parse(fs.readFileSync("data.json"));
 }
 
 function writeData(data) {
-  fs.writeFileSync(path.join(__dirname, "data.json"), JSON.stringify(data, null, 2));
+  fs.writeFileSync("data.json", JSON.stringify(data, null, 2));
 }
 
 /* ================= AUTH ================= */
@@ -64,21 +62,22 @@ app.get("/notes", (req, res) => {
   res.json(data.notes);
 });
 
-// Add Note
+// Add Note (Agentic AI Vibe Enhancer)
 app.post("/notes", (req, res) => {
   const data = readData();
   let text = req.body.text;
-
+  
+  // Vibe AI: Auto-append emojis based on text keywords for aesthetic
   const lowerText = text.toLowerCase();
-
+  
   if (lowerText.includes("meeting") || lowerText.includes("interview") || lowerText.includes("call")) text += " 🤝";
   else if (lowerText.includes("study") || lowerText.includes("exam") || lowerText.includes("learn")) text += " 📚";
   else if (lowerText.includes("code") || lowerText.includes("bug") || lowerText.includes("dev")) text += " 💻";
-  else if (lowerText.includes("gym") || lowerText.includes("workout")) text += " 🏋️";
-  else if (lowerText.includes("buy") || lowerText.includes("shop")) text += " 🛒";
-  else if (lowerText.includes("coffee") || lowerText.includes("tea")) text += " ☕";
-  else if (lowerText.includes("idea")) text += " 💡";
-  else text += " ✨";
+  else if (lowerText.includes("gym") || lowerText.includes("workout") || lowerText.includes("fit")) text += " 🏋️‍♂️";
+  else if (lowerText.includes("buy") || lowerText.includes("shop") || lowerText.includes("grocery")) text += " 🛒";
+  else if (lowerText.includes("coffee") || lowerText.includes("tea") || lowerText.includes("snack")) text += " ☕";
+  else if (lowerText.includes("idea") || lowerText.includes("think") || lowerText.includes("brainstorm")) text += " 💡";
+  else text += " ✨"; // default vibe
 
   data.notes.push({
     id: Date.now(),
@@ -111,7 +110,6 @@ app.post("/notes/update", (req, res) => {
   res.json({ message: "Updated" });
 });
 
-// Start server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
