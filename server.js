@@ -3,10 +3,10 @@ const fs = require("fs");
 const path = require("path");
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
-app.use(express.static("public", { index: false }));
+app.use(express.static("public"));
 
 // Root → Login page
 app.get("/", (req, res) => {
@@ -111,5 +111,5 @@ app.post("/notes/update", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
