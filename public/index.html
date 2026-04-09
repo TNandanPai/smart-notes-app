@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Notes App</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="dashboard">
+    <div class="header-section">
+      <h2>My Notes</h2>
+      <button class="logout-btn" onclick="logout()" title="Logout">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </button>
+    </div>
+
+    <!-- Input Section -->
+    <div class="input-section">
+      <input 
+        type="text" 
+        id="noteInput" 
+        placeholder="Write a note..."
+      >
+
+      <select id="categorySelect">
+        <option value="Personal">Personal</option>
+        <option value="Work">Work</option>
+        <option value="Study">Study</option>
+      </select>
+
+      <select id="prioritySelect">
+        <option value="Low">Low Priority</option>
+        <option value="Medium">Medium Priority</option>
+        <option value="High">High Priority</option>
+      </select>
+
+      <input 
+        type="date" 
+        id="dueDateInput" 
+        title="Due Date (Optional)"
+      >
+
+      <button class="add-btn" onclick="addNote()">+</button>
+    </div>
+
+    <!-- Search -->
+    <input 
+      type="text" 
+      id="searchInput" 
+      placeholder="Search notes..." 
+      oninput="searchNotes()"
+    >
+
+    <!-- Bottom Section -->
+    <div class="bottom-section">
+      <div class="stats-section">
+        <div class="stat-item">
+          <span class="stat-number" id="totalNotes">0</span>
+          <span class="stat-label">Total</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number" id="completedNotes">0</span>
+          <span class="stat-label">Done</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number" id="overdueNotes">0</span>
+          <span class="stat-label">Overdue</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number" id="highPriorityNotes">0</span>
+          <span class="stat-label">High Priority</span>
+        </div>
+      </div>
+
+      <select id="filterSelect" onchange="filterNotes()">
+        <option value="All">Show All</option>
+        <option value="Personal">Personal</option>
+        <option value="Work">Work</option>
+        <option value="Study">Study</option>
+        <option value="Completed">Completed</option>
+        <option value="Pending">Pending</option>
+      </select>
+    </div>
+
+    <!-- Notes Grid -->
+    <div id="notesList" class="notes-grid"></div>
+
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>

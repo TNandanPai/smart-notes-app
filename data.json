@@ -1,0 +1,72 @@
+{
+  "users": [
+    {
+      "username": "Manish",
+      "password": "123456"
+    },
+    {
+      "username": "Giridhar",
+      "password": "123"
+    },
+    {
+      "username": "Sahil",
+      "password": "FUCKME69"
+    },
+    {
+      "username": "T Nandan Pai",
+      "password": "fuckit69"
+    },
+    {
+      "username": "nandan",
+      "password": "123456"
+    },
+    {
+      "username": "Nandan Pai",
+      "password": "123456"
+    }
+  ],
+  "notes": [
+    {
+      "id": 1772350404984,
+      "text": "Java Full Stack interview",
+      "category": "Study",
+      "date": "1/3/2026, 1:03:24 pm",
+      "important": false
+    },
+    {
+      "id": 1772350438160,
+      "text": "Submit the report quiclly",
+      "category": "Work",
+      "date": "1/3/2026, 1:03:58 pm",
+      "important": true
+    },
+    {
+      "id": 1772350457215,
+      "text": "Birthday gift for my sister",
+      "category": "Personal",
+      "date": "1/3/2026, 1:04:17 pm",
+      "important": false,
+      "completed": true
+    },
+    {
+      "id": 1774160478997,
+      "text": "Meeting at 6PM 🤝",
+      "category": "Work",
+      "priority": "High",
+      "dueDate": "2026-03-20",
+      "date": "22/3/2026, 11:51:18 am",
+      "important": true,
+      "completed": true
+    },
+    {
+      "id": 1774160791446,
+      "text": "Project due 5pm ✨",
+      "category": "Work",
+      "priority": "High",
+      "dueDate": "2026-03-28",
+      "date": "22/3/2026, 11:56:31 am",
+      "important": true,
+      "completed": false
+    }
+  ]
+}

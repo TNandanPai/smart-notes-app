@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login - My Notes App</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="dashboard auth-page">
+  <h2><i class="fa-solid fa-leaf" style="margin-right: 10px;"></i>Login</h2>
+
+  <div class="auth-container">
+    <div style="position: relative;">
+      <i class="fa-solid fa-user" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+      <input type="text" id="loginUsername" placeholder="Username" style="padding-left: 45px;">
+    </div>
+    <div style="position: relative;">
+      <i class="fa-solid fa-lock" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+      <input type="password" id="loginPassword" placeholder="Password" style="padding-left: 45px;">
+    </div>
+    <button onclick="login()">Login with Password</button>
+
+    <div style="text-align: center; margin: 15px 0; color: var(--text-muted); font-size: 14px;">
+      ────── or ──────
+    </div>
+
+    <button onclick="loginWithSecretCode()" style="background: linear-gradient(135deg, #32CD32, #228B22);">
+      <i class="fa-solid fa-key" style="margin-right: 8px;"></i>
+      Login with Secret Code
+    </button>
+  </div>
+
+  <p>
+    Don't have an account?
+    <a href="signup.html">Signup</a> |
+    <a href="#" onclick="registerSecretCode()" style="color: var(--accent-secondary);">Register Secret Code</a>
+  </p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
