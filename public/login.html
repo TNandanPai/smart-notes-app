@@ -10,14 +10,16 @@
 <div class="dashboard auth-page">
   <h2><i class="fa-solid fa-leaf" style="margin-right: 10px;"></i>Login</h2>
 
-  <div class="auth-container">
+  <div class="auth-container" autocomplete="off">
+    <input type="text" name="fakeusernameremembered" id="fakeusernameremembered" style="display:none;" autocomplete="off">
+    <input type="password" name="fakepasswordremembered" id="fakepasswordremembered" style="display:none;" autocomplete="off">
     <div style="position: relative;">
       <i class="fa-solid fa-user" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
-      <input type="text" id="loginUsername" placeholder="Username" style="padding-left: 45px;">
+      <input type="text" id="loginUsername" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="Username" style="padding-left: 45px;">
     </div>
     <div style="position: relative;">
       <i class="fa-solid fa-lock" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
-      <input type="password" id="loginPassword" placeholder="Password" style="padding-left: 45px;">
+      <input type="password" id="loginPassword" autocomplete="new-password" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="Password" style="padding-left: 45px;">
     </div>
     <button onclick="login()">Login with Password</button>
 

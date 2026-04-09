@@ -8,6 +8,27 @@
 
   let allNotes = [];
 
+  /* ================= THEME MANAGEMENT ================= */
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const toggle = document.querySelector('.theme-toggle');
+    if (toggle) {
+      toggle.setAttribute('data-theme', theme);
+    }
+    localStorage.setItem('theme', theme);
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    const newTheme = current === 'light' ? 'dark' : 'light';
+    applyTheme(newTheme);
+  }
+
+  // Apply saved theme on load
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  applyTheme(savedTheme);
+
   /* ================= SECRET CODE AUTH ================= */
 
   // Simple secret code authentication with device binding and rate limiting
@@ -294,10 +315,12 @@
     allNotes = notes;
     
     // Reset filter and search when loading notes
-    document.getElementById("filterSelect").value = "All";
     document.getElementById("searchInput").value = "";
+    document.getElementById("categoryFilter").value = "";
+    document.getElementById("priorityFilter").value = "";
+    document.getElementById("statusFilter").value = "";
     
-    displayNotes(notes);
+    applyFilters();
   }
 
   /* ================= DISPLAY NOTES ================= */
@@ -324,7 +347,13 @@
     document.getElementById("overdueNotes").textContent = overdueNotes;
     document.getElementById("highPriorityNotes").textContent = highPriorityNotes;
 
-    notes.forEach(n => {
+    const sortedNotes = [...notes].sort((a, b) => {
+      const aPinned = a.important === true ? 1 : 0;
+      const bPinned = b.important === true ? 1 : 0;
+      return bPinned - aPinned;
+    });
+
+    sortedNotes.forEach(n => {
       // Provide defaults for backward compatibility
       const priority = n.priority || 'Medium';
       const completed = n.completed || false;
@@ -334,14 +363,14 @@
       const isDueSoon = dueDate && !isOverdue && new Date(dueDate) <= new Date(Date.now() + 24 * 60 * 60 * 1000);
       
       list.innerHTML += `
-        <div class="note-card ${n.category} ${n.important ? 'important-note' : ''} ${isOverdue ? 'overdue-note' : ''} ${isDueSoon ? 'due-soon-note' : ''} ${completed ? 'completed-note' : ''}">
+        <div class="note-card ${n.category} ${n.important ? 'pinned-note' : ''} ${isOverdue ? 'overdue-note' : ''} ${isDueSoon ? 'due-soon-note' : ''} ${completed ? 'completed-note' : ''}">
           <div class="card-content">
             <h4>${n.text}</h4>
             <div class="note-meta">
               <div class="note-tags">
                 <span class="category-tag"><i class="fa-solid fa-tag"></i> ${n.category}</span>
                 <span class="priority-tag priority-${priority.toLowerCase()}"><i class="fa-solid fa-flag"></i> ${priority}</span>
-                ${n.important ? '<span class="important-tag"><i class="fa-solid fa-triangle-exclamation"></i> Important</span>' : ''}
+                ${n.important ? '<span class="pinned-tag"><i class="fa-solid fa-thumbtack"></i> Pinned</span>' : ''}
                 ${isOverdue ? '<span class="overdue-tag"><i class="fa-solid fa-clock"></i> Overdue</span>' : ''}
                 ${isDueSoon ? '<span class="due-soon-tag"><i class="fa-solid fa-bell"></i> Due Soon</span>' : ''}
                 ${completed ? '<span class="completed-tag"><i class="fa-solid fa-check-circle"></i> Completed</span>' : ''}
@@ -353,6 +382,9 @@
             </div>
           </div>
           <div class="actions">
+            <button onclick="togglePin(${n.id})" class="pin-btn ${n.important ? 'pinned' : ''}" title="${n.important ? 'Unpin' : 'Pin'}">
+              <i class="fa-solid fa-thumbtack"></i>
+            </button>
             <button class="edit-btn" onclick="editNote(${n.id}, \`${n.text}\`)" title="Edit">
               <i class="fa-solid fa-pencil"></i>
             </button>
@@ -368,36 +400,31 @@
     });
   }
 
-  /* ================= SEARCH ================= */
+  /* ================= SEARCH & FILTER ================= */
 
-  function searchNotes() {
+  function applyFilters() {
     const keyword = document.getElementById("searchInput").value.toLowerCase();
+    const category = document.getElementById("categoryFilter").value;
+    const priority = document.getElementById("priorityFilter").value;
+    const status = document.getElementById("statusFilter").value;
 
-    const filtered = allNotes.filter(n =>
-      n.text.toLowerCase().includes(keyword)
-    );
-
-    displayNotes(filtered);
-  }
-
-  /* ================= FILTER ================= */
-
-  function filterNotes() {
-    const selected = document.getElementById("filterSelect").value;
-
-    // Clear search when filtering
-    document.getElementById("searchInput").value = "";
-
-    let filtered;
-    if (selected === "All") {
-      filtered = allNotes;
-    } else if (selected === "Completed") {
-      filtered = allNotes.filter(n => n.completed === true);
-    } else if (selected === "Pending") {
-      filtered = allNotes.filter(n => !(n.completed === true));
-    } else {
-      filtered = allNotes.filter(n => n.category === selected);
-    }
+    let filtered = allNotes.filter(n => {
+      const matchesSearch = n.text.toLowerCase().includes(keyword);
+      const matchesCategory = !category || n.category === category;
+      const matchesPriority = !priority || (n.priority || 'Medium') === priority;
+      
+      const completed = n.completed === true;
+      const dueDate = n.dueDate;
+      const isOverdue = dueDate && new Date(dueDate) < new Date() && !completed;
+      
+      let noteStatus = 'Pending';
+      if (completed) noteStatus = 'Completed';
+      else if (isOverdue) noteStatus = 'Overdue';
+      
+      const matchesStatus = !status || noteStatus === status;
+      
+      return matchesSearch && matchesCategory && matchesPriority && matchesStatus;
+    });
 
     displayNotes(filtered);
   }
@@ -467,6 +494,27 @@
         }).then(() => {
           loadNotes();
           showToast("Note status updated!", "success");
+        });
+      });
+  }
+
+  /* ================= TOGGLE PIN ================= */
+
+  async function togglePin(id) {
+    fetch("/notes")
+      .then(res => res.json())
+      .then(notes => {
+        const updated = notes.map(n =>
+          n.id == id ? { ...n, important: !n.important } : n
+        );
+
+        fetch("/notes/update", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updated)
+        }).then(() => {
+          loadNotes();
+          showToast("Note pin updated!", "success");
         });
       });
   }

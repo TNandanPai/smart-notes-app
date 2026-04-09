@@ -10,9 +10,15 @@
   <div class="dashboard">
     <div class="header-section">
       <h2>My Notes</h2>
-      <button class="logout-btn" onclick="logout()" title="Logout">
-        <i class="fa-solid fa-right-from-bracket"></i>
-      </button>
+      <div class="header-actions">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+          <i class="fa-solid fa-moon"></i>
+          <i class="fa-solid fa-sun"></i>
+        </button>
+        <button class="logout-btn" onclick="logout()" title="Logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
     </div>
 
     <!-- Input Section -->
@@ -49,8 +55,30 @@
       type="text" 
       id="searchInput" 
       placeholder="Search notes..." 
-      oninput="searchNotes()"
+      oninput="applyFilters()"
     >
+
+    <!-- Filters -->
+    <div class="filter-section">
+      <select id="categoryFilter" onchange="applyFilters()">
+        <option value="">All Categories</option>
+        <option value="Personal">Personal</option>
+        <option value="Work">Work</option>
+        <option value="Study">Study</option>
+      </select>
+      <select id="priorityFilter" onchange="applyFilters()">
+        <option value="">All Priorities</option>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+      <select id="statusFilter" onchange="applyFilters()">
+        <option value="">All Status</option>
+        <option value="Pending">Pending</option>
+        <option value="Completed">Completed</option>
+        <option value="Overdue">Overdue</option>
+      </select>
+    </div>
 
     <!-- Bottom Section -->
     <div class="bottom-section">
@@ -72,15 +100,6 @@
           <span class="stat-label">High Priority</span>
         </div>
       </div>
-
-      <select id="filterSelect" onchange="filterNotes()">
-        <option value="All">Show All</option>
-        <option value="Personal">Personal</option>
-        <option value="Work">Work</option>
-        <option value="Study">Study</option>
-        <option value="Completed">Completed</option>
-        <option value="Pending">Pending</option>
-      </select>
     </div>
 
     <!-- Notes Grid -->
