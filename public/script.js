@@ -363,7 +363,7 @@
       const isDueSoon = dueDate && !isOverdue && new Date(dueDate) <= new Date(Date.now() + 24 * 60 * 60 * 1000);
       
       list.innerHTML += `
-        <div class="note-card ${n.category} ${n.important ? 'pinned-note' : ''} ${isOverdue ? 'overdue-note' : ''} ${isDueSoon ? 'due-soon-note' : ''} ${completed ? 'completed-note' : ''}">
+        <div class="note-card ${n.category} ${n.important ? 'pinned-note' : ''} ${isOverdue ? 'overdue-note' : ''} ${isDueSoon ? 'due-soon-note' : ''} ${completed ? 'completed-note' : ''}" data-note-id="${n.id}">
           <div class="card-content">
             <h4>${n.text}</h4>
             <div class="note-meta">
@@ -382,16 +382,16 @@
             </div>
           </div>
           <div class="actions">
-            <button onclick="togglePin(${n.id})" class="pin-btn ${n.important ? 'pinned' : ''}" title="${n.important ? 'Unpin' : 'Pin'}">
+            <button type="button" class="btn-action pin-btn ${n.important ? 'pinned' : ''}" data-action="pin" title="${n.important ? 'Unpin' : 'Pin'}">
               <i class="fa-solid fa-thumbtack"></i>
             </button>
-            <button class="edit-btn" onclick="editNote(${n.id}, \`${n.text}\`)" title="Edit">
+            <button type="button" class="btn-action edit-btn" data-action="edit" title="Edit">
               <i class="fa-solid fa-pencil"></i>
             </button>
-            <button onclick="toggleComplete(${n.id})" title="${completed ? 'Mark Incomplete' : 'Mark Complete'}" class="complete-btn ${completed ? 'completed' : ''}">
+            <button type="button" class="btn-action complete-btn ${completed ? 'completed' : ''}" data-action="complete" title="${completed ? 'Mark Incomplete' : 'Mark Complete'}">
               <i class="fa-solid ${completed ? 'fa-undo' : 'fa-check'}"></i>
             </button>
-            <button onclick="deleteNote(${n.id})" title="Delete">
+            <button type="button" class="btn-action delete-btn" data-action="delete" title="Delete">
               <i class="fa-solid fa-xmark"></i>
             </button>
           </div>
@@ -428,6 +428,29 @@
 
     displayNotes(filtered);
   }
+
+  /* ================= ACTION DELEGATION ================= */
+
+  document.getElementById("notesList").addEventListener("click", event => {
+    const button = event.target.closest("button[data-action]");
+    if (!button) return;
+
+    const noteCard = button.closest(".note-card");
+    const noteId = noteCard?.getAttribute("data-note-id");
+    if (!noteId) return;
+
+    const action = button.getAttribute("data-action");
+    if (action === "pin") {
+      togglePin(Number(noteId));
+    } else if (action === "edit") {
+      const note = allNotes.find(n => n.id == noteId);
+      editNote(Number(noteId), note?.text || "");
+    } else if (action === "complete") {
+      toggleComplete(Number(noteId));
+    } else if (action === "delete") {
+      deleteNote(Number(noteId));
+    }
+  });
 
   /* ================= ADD NOTE (Agentic AI) ================= */
 
